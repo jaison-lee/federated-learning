@@ -26,9 +26,9 @@ python train.py \
   --local_lr 0.001 \
   --server_optimizer sgd \
   --server_lr 0.1 \
-  --bz 128 \
+  --bz 64 \
   --device "mps" \
   --log_freq 1 \
   --verbose 1 \
-  --logs_dir "logs/cifar10/le50_bz128" \
+  --logs_dir "logs/cifar10/10_bz64" \
   --seed 12

@@ -78,6 +78,8 @@ Welcome to the first lab session of the Federated Learning & Data Privacy course
 
   ![Training accuracy](/TP1/traing-acc-cifar10.png)
   ![Testing accuracy](/TP1/test-acc-cifar10.png)
+
+  In this exercise, I've tried different hyperparameters, use different learning rates, different batch sizes, with and without normalization, add padding and randomcrop, but as can be seen from the training and testing accuracy, the model is overfitting and the accuracy in testing is very bad. 
 ---
 
 
