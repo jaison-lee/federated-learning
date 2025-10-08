@@ -15,7 +15,7 @@ Welcome to the first lab session of the Federated Learning & Data Privacy course
   - Add brief descriptions to each component to explain its functionality.  
   **Share your UML Diagram**
 
-  ![FedAvg_UML](/federated-learning/TP1/FedAvg_UML.png)
+  ![FedAvg_UML](/TP1/FedAvg_UML.png)
 ---
 
 ### EXERCISE 2 - Complete the Code
@@ -44,7 +44,7 @@ Welcome to the first lab session of the Federated Learning & Data Privacy course
   - Record the test accuracy for each setting.
   - **Bonus**: Set the batch size equal to the dataset size, and the number of local epochs to 1. This will reduce to running FedSGD algorithm. Test the algorithm and comment the results.
 
-![Testing accuracy of batchsize 6000, 1 local epoch](/federated-learning/TP1/test_acc_bz6000.png)
+![Testing accuracy of batchsize 6000, 1 local epoch](/TP1/test_acc_bz6000.png)
 
   => When we set batch size equal to the dataset size, the model need even more communication round to be converged comparing to 1 local epoch with batch size 128. It could be because when batch size is large, the local model is updated with fewer step comparing to batch size is small. So it need even more communication round to be converged.
 
@@ -56,7 +56,7 @@ Welcome to the first lab session of the Federated Learning & Data Privacy course
   Follow the link to check how to visualize your plots. Remember to change `logs_dir` everytime you run `run.sh` to test different configurations.**   
   **Share the plot and your answers**
 
-  ![Testing accuracy](/federated-learning/TP1/test_acc.png)
+  ![Testing accuracy](/TP1/test_acc.png)
 
 
     - As we can see from the result, when the number of local epochs is 1, the client frequently sync with the server which leads to slow local progress, since each client only performs a small update before aggregation. And the global model need more communication rounds to be converged.
@@ -76,8 +76,8 @@ Welcome to the first lab session of the Federated Learning & Data Privacy course
   - Test different hyperparameters setups.
   - Plot the training curves and comment the effect of the different hyperparameters choices.
 
-  ![Training accuracy](/federated-learning/TP1/traing-acc-cifar10.png)
-  ![Testing accuracy](/federated-learning/TP1/test-acc-cifar10.png)
+  ![Training accuracy](/TP1/traing-acc-cifar10.png)
+  ![Testing accuracy](/TP1/test-acc-cifar10.png)
 ---
 
 
