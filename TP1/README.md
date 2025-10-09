@@ -62,6 +62,8 @@ Welcome to the first lab session of the Federated Learning & Data Privacy course
     - As we can see from the result, when the number of local epochs is 1, the client frequently sync with the server which leads to slow local progress, since each client only performs a small update before aggregation. And the global model need more communication rounds to be converged.
 
     - When the number of local epochs is 5 or higher, the client trains longer locally before communicating. As we can see that the result of model training on 1 local epochs after 5 communication rounds and those on 5 local epochs after 1 communication round are equivalent. This accelerate global model training, need fewer rounds to be converged.
+
+    - When the number of local epochs is too large (50 or 100), the global accuracy slightly decrease because each client converges to its optimal point.
 ---
 
 ### BONUS EXERCISE - Complex Dataset & Model
