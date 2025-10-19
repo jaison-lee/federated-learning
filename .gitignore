@@ -7,6 +7,7 @@ chkpts_list_cifar100
 notebooks/
 TP1/data/mnist/
 TP1/data/cifar10/
+.DS_Store
 
 *.ipynb
 *.npy
