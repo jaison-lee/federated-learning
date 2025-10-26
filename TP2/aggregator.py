@@ -257,6 +257,8 @@ class CentralizedAggregator(Aggregator):
 
         # Perform local training
         # TODO: only sampled clients perform local training
+
+        # Conditional to check dinamiccly for ex4, ex5.1, ex5.2 and ex6.
         if self.sampling_rate < 1.0:
             self.sampled_clients = self.sample_clients()
             for client in self.sampled_clients:
@@ -294,7 +296,6 @@ class CentralizedAggregator(Aggregator):
                 client.step()
 
             learners = [client.learner for client in self.clients]
-            self.global_learner.optimizer.zero_grad()
             clients_weights = torch.tensor(self.clients_weights, dtype=torch.float32)
 
         # Aggregate learners params
