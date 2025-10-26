@@ -120,7 +120,7 @@ def parse_args(args_list=None):
     if args.device == "mps" and not torch.backends.mps.is_available():
         args.device = "cpu"
         warnings.warn(
-            'CUDA is not available, device is automatically set to "CPU"!',
+            'MPS is not available, device is automatically set to "CPU"!',
             RuntimeWarning,
         )
 

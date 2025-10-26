@@ -51,7 +51,9 @@ if __name__ == "__main__":
 
     seed = args.seed if (("seed" in args) and (args.seed >= 0)) else int(time.time())
     torch.manual_seed(seed)
-
+    print(f"Client is sampling with replacement: {args.sample_with_replacement}")
+    print(f"Sampling rate: {args.sampling_rate}")
+    print(f"Local optimizer: {args.local_optimizer}")
     print("==> Initialize Clients..")
 
     clients = init_clients(args_=args)

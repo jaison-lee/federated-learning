@@ -159,6 +159,7 @@ class Aggregator(ABC):
 
             tqdm.write("+" * 50)
             tqdm.write(f"Global | Round {self.c_round}..")
+            tqdm.write(f"Sapmpled Clients: {self.sampled_clients_ids}")
             tqdm.write(
                 f"Train Loss: {global_train_loss:.3f} | Train Metric: {global_train_metric:.3f} |",
                 end="",
@@ -229,7 +230,6 @@ class Aggregator(ABC):
                 population=range(self.n_clients),
                 k=self.n_clients_per_round,
             )
-
         return [self.clients[id_] for id_ in self.sampled_clients_ids]
 
 
@@ -257,24 +257,52 @@ class CentralizedAggregator(Aggregator):
 
         # Perform local training
         # TODO: only sampled clients perform local training
-        for client in self.clients:
-            client.step()
+        if self.sampling_rate < 1.0:
+            self.sampled_clients = self.sample_clients()
+            for client in self.sampled_clients:
+                client.step()
 
-        # Gather learners from all clients
-        # TODO: gather learners from sampled clients
-        self.sampled_clients = self.sample_clients()
-        learners = [client.learner for client in self.sampled_clients]
-        # learners = [client.learner for client in self.clients]
+            # Gather learners from all clients
+            # TODO: gather learners from sampled clients
+            learners = [client.learner for client in self.sampled_clients]
 
-        # TODO: adjust clients weights for sampled clients
-        clients_weights = torch.tensor(self.clients_weights, dtype=torch.float32)
+            # TODO: adjust clients weights for sampled clients
+            if self.sample_with_replacement:
+                sampled_weights_dict = {}
+                for client_id in self.sampled_clients_ids:
+                    if client_id in sampled_weights_dict:
+                        sampled_weights_dict[client_id] += self.clients_weights[
+                            client_id
+                        ]
+                    else:
+                        sampled_weights_dict[client_id] = self.clients_weights[
+                            client_id
+                        ]
+                clients_weights = torch.tensor(
+                    [sampled_weights_dict[i] for i in self.sampled_clients_ids],
+                    dtype=torch.float32,
+                )
+            else:
+                clients_weights = torch.tensor(
+                    [self.clients_weights[i] for i in self.sampled_clients_ids],
+                    dtype=torch.float32,
+                )
+            # Normalize weights
+            clients_weights = clients_weights / clients_weights.sum()
+        else:
+            for client in self.clients:
+                client.step()
+
+            learners = [client.learner for client in self.clients]
+            self.global_learner.optimizer.zero_grad()
+            clients_weights = torch.tensor(self.clients_weights, dtype=torch.float32)
 
         # Aggregate learners params
         # TODO: aggregate the parameters only from the sampled clients
         average_models(
             learners=learners,
             target_learner=self.global_learner,
-            # weights=clients_weights,
+            weights=clients_weights,
             average_params=True,
             average_gradients=False,
         )

@@ -33,10 +33,25 @@ To get started, clone the TP2 folder from the lab repository.
 **Objective**: Demonstrate that an increase in the number of local epochs can potentially degrade FedAvg’s performance under non-IID data distributions.
 
 - **Preliminary question**: What non-IID data distribution means? Provide examples.
+
+    $ \Rightarrow $ It means one data point influences or is correlated with another data point, or different parts of the dataset come from different distributions.
+
+    Ex: A dataset has subdatasets A and B, in which A only output 1 and 2 while B only output 3 and 4.
+
+
 - **Pathological Split**: Familiarize yourself with the concept of “pathological split” as explained in [Communication-Efficient Learning of Deep Networks from Decentralized Data (Section 3)](https://arxiv.org/abs/1602.05629). The `pathological_non_iid_split` function has been implemented for you in `data/mnist/utils.py`. Review this method and summarize it briefly.
+
+    $ \Rightarrow $ In general, the purpose of this method is to split a classification dataset among n_clients such that each client only receives data from a limited subset of classes (n_classes_per_client), creating a non-IID data distribution.
+
+    
 - **Experiments**: Run the `generate_data.py` script with the `--non_iid` flag and set `--n_classes_per_client=2` to partition the MNIST dataset in a non-IID fashion. 
 - **Plot**: Run experiments to observe how varying the number of local epochs (e.g., 1, 5, 10, 50, 100) influences the model's test accuracy under non-IID data distribution. Plot the relationship between the number of local epochs and test accuracy.
+
+ ![](/TP2/ex4.png)
 - **Interpretation**: Briefly comment the results. Were these results expected?
+
+    $ \Rightarrow $ The highest accuracy was obtained by number of local epoches 1. However, when we increase number of local epoch, the accuracy drop significantly due to the non-IID dataset where each local model converges to its local optima in high number of local epoch.
+
 
 ---
 
@@ -61,6 +76,8 @@ Understand uniform sampling as described in Assumption 6. This involves selectin
 
 Run the `train.py` script with `sampling_rate = 0.2`.
 
+ ![](/TP2/ex5.1.png)
+
 ### EXERCISE 5.2 - Sampling With Replacement
 
 #### Background
@@ -74,6 +91,8 @@ Understand sampling with replacement according to sampling probabilities $p_1, \
 
 Run the `train.py` script with `sampling_rate = 0.2` and `sample_with_replacement = True`.
 
+ ![](/TP2/ex5.2.png)
+
 ---
 
 ## EXERCISE 6 - Algorithms
@@ -85,9 +104,26 @@ Run the `train.py` script with `sampling_rate = 0.2` and `sample_with_replacemen
 - **FedProx Overview**: FedProx is a Federated Learning algorithm that modifies the local training objective by introducing a proximal term, which aims to reduce local model drift by penalizing significant deviations from the global model. Review the FedProx algorithm [Federated Optimization in Heterogeneous Networks (Algorithm 2)](https://arxiv.org/abs/1812.06127) and our implementation of the ProxSGD class in `utils/optim.py`.
 - **Experiments**: To initiate FedProx experiments, run the `train.py` script with `local_optimizer = "prox_sgd"` and set the proximal term coefficient `mu = 2`.
 - **Plot**: Replicate the plot from Exercise 4.1, this time evaluating FedProx algorithm.
+
+ ![](/TP2/ex6.png)
+
 - **Analysis**: Discuss the observed differences in performance between FedAvg and FedProx. 
+
     - Explain the motivation behind FedProx and what are the potential advantages compared to FedAvg.
     - Are there specific configurations (e.g., number of local epochs) where FedProx particularly outperforms FedAvg?
+
+    $ \Rightarrow $ We can see from the plot of ex4 and ex6 that FedAvg outperformed FedProx in all cases of number of local epoch.
+
+    In general, the motivation behind FedProx is to address 2 major types of heterogeneity which cause FedAvg in real-life perorm badly.
+    - Statistical Heterogeneity: where data is non-identically distributed across devices
+    - Systems Heterogeneity: Devices have varying system constraints (e.g., CPU, network, battery)
+
+    Advantages of Fedprox compare to FedAvg:
+    - More stable and robust under heterogeneous data due to the introduction of proximal term which penalizes the local model not drifting too far from the global optimal, then improves the stability and overall accuracy.
+
+    - FedProx provides convergence guarantees when learning over data from non-identical distributions (statistical heterogeneity) and while adhering to device-level systems constraints by allowing variable amounts of local work (sysem heterogeneity)
+
+    As the paper mentioned that Fedprox performs better and more stable in case of heterogeneous dataset, while in this exercise we observed that the performance of Fedprox is lower than FedAvg. And they also mentioned that when mu = 0 in iid dataset, Fedprox performs equivalently comparing to FedAvg. However, as I experienced with mu = 0 in iid dataset, FedAvg also outperformed in all cases of numper local epoch. One potential reason is that the way we setup the experiment(global and model setup) which could limit the performance of Fedprox.
 
 ---
 

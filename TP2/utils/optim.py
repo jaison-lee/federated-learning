@@ -7,7 +7,7 @@ from copy import deepcopy
 from .constants import *
 
 
-def get_optimizer(optimizer_name, model, lr, mu=0.):
+def get_optimizer(optimizer_name, model, lr, mu=0.0):
     """returns torch.optim.Optimizer given an optimizer name, a model and learning rate
 
     Parameters
@@ -31,15 +31,15 @@ def get_optimizer(optimizer_name, model, lr, mu=0.):
             [param for param in model.parameters() if param.requires_grad],
             lr=lr,
             momentum=MOMENTUM,
-            weight_decay=WEIGHT_DECAY
+            weight_decay=WEIGHT_DECAY,
         )
     elif optimizer_name == "prox_sgd":
         return ProxSGD(
             [param for param in model.parameters() if param.requires_grad],
             mu=mu,
             lr=lr,
-            momentum=0.,
-            weight_decay=5e-4
+            momentum=0.0,
+            weight_decay=5e-4,
         )
     else:
         raise NotImplementedError(
@@ -79,8 +79,16 @@ class ProxSGD(Optimizer):
 
     """
 
-    def __init__(self, params, lr=required, mu=0., momentum=0., dampening=0.,
-                 weight_decay=0., nesterov=False):
+    def __init__(
+        self,
+        params,
+        lr=required,
+        mu=0.0,
+        momentum=0.0,
+        dampening=0.0,
+        weight_decay=0.0,
+        nesterov=False,
+    ):
         if lr is not required and lr < 0.0:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if momentum < 0.0:
@@ -88,8 +96,13 @@ class ProxSGD(Optimizer):
         if weight_decay < 0.0:
             raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
 
-        defaults = dict(lr=lr, momentum=momentum, dampening=dampening,
-                        weight_decay=weight_decay, nesterov=nesterov)
+        defaults = dict(
+            lr=lr,
+            momentum=momentum,
+            dampening=dampening,
+            weight_decay=weight_decay,
+            nesterov=nesterov,
+        )
         if nesterov and (momentum <= 0 or dampening != 0):
             raise ValueError("Nesterov momentum requires a momentum and zero dampening")
         super(ProxSGD, self).__init__(params, defaults)
@@ -97,14 +110,14 @@ class ProxSGD(Optimizer):
         self.mu = mu
 
         for group in self.param_groups:
-            for p in group['params']:
+            for p in group["params"]:
                 param_state = self.state[p]
-                param_state['initial_params'] = deepcopy(p.data)
+                param_state["initial_params"] = deepcopy(p.data)
 
     def __setstate__(self, state):
         super(ProxSGD, self).__setstate__(state)
         for group in self.param_groups:
-            group.setdefault('nesterov', False)
+            group.setdefault("nesterov", False)
 
     def step(self, closure=None):
         """Performs a single optimization step.
@@ -119,12 +132,12 @@ class ProxSGD(Optimizer):
                 loss = closure()
 
         for group in self.param_groups:
-            weight_decay = group['weight_decay']
-            momentum = group['momentum']
-            dampening = group['dampening']
-            nesterov = group['nesterov']
+            weight_decay = group["weight_decay"]
+            momentum = group["momentum"]
+            dampening = group["dampening"]
+            nesterov = group["nesterov"]
 
-            for p in group['params']:
+            for p in group["params"]:
                 if p.grad is None:
                     continue
                 d_p = p.grad.data
@@ -133,10 +146,10 @@ class ProxSGD(Optimizer):
 
                 param_state = self.state[p]
                 if momentum != 0:
-                    if 'momentum_buffer' not in param_state:
-                        buf = param_state['momentum_buffer'] = torch.clone(d_p).detach()
+                    if "momentum_buffer" not in param_state:
+                        buf = param_state["momentum_buffer"] = torch.clone(d_p).detach()
                     else:
-                        buf = param_state['momentum_buffer']
+                        buf = param_state["momentum_buffer"]
                         buf.mul_(momentum).add_(d_p, alpha=1 - dampening)
                     if nesterov:
                         d_p = d_p.add(buf, alpha=momentum)
@@ -144,30 +157,34 @@ class ProxSGD(Optimizer):
                         d_p = buf
 
                 # add proximal term
-                d_p.add_(p.data - param_state['initial_params'], alpha=self.mu)
+                d_p.add_(p.data - param_state["initial_params"], alpha=self.mu)
 
-                p.data.add_(d_p, alpha=-group['lr'])
+                p.data.add_(d_p, alpha=-group["lr"])
 
         return loss
 
     def set_initial_params(self, initial_params):
         r""".
-            .. warning::
-                Parameters need to be specified as collections that have a deterministic
-                ordering that is consistent between runs. Examples of objects that don't
-                satisfy those properties are sets and iterators over values of dictionaries.
+        .. warning::
+            Parameters need to be specified as collections that have a deterministic
+            ordering that is consistent between runs. Examples of objects that don't
+            satisfy those properties are sets and iterators over values of dictionaries.
 
-            Arguments:
-                initial_params (iterable): an iterable of :class:`torch.Tensor` s or
-                    :class:`dict` s.
+        Arguments:
+            initial_params (iterable): an iterable of :class:`torch.Tensor` s or
+                :class:`dict` s.
         """
         initial_param_groups = list(initial_params)
         if len(initial_param_groups) == 0:
             raise ValueError("optimizer got an empty parameter list")
         if not isinstance(initial_param_groups[0], dict):
-            initial_param_groups = [{'params': initial_param_groups}]
+            initial_param_groups = [{"params": initial_param_groups}]
 
-        for param_group, initial_param_group in zip(self.param_groups, initial_param_groups):
-            for param, initial_param in zip(param_group['params'], initial_param_group['params']):
+        for param_group, initial_param_group in zip(
+            self.param_groups, initial_param_groups
+        ):
+            for param, initial_param in zip(
+                param_group["params"], initial_param_group["params"]
+            ):
                 param_state = self.state[param]
-                param_state['initial_params'] = deepcopy(initial_param.data)
+                param_state["initial_params"] = deepcopy(initial_param.data)
