@@ -79,21 +79,27 @@ Review the paper [FjORD: Fair and Accurate Federated Learning under heterogeneou
 **Preliminary Questions**: 
 1. What is system heterogeneity and why it is a problem in Federated Learning?
 
-$ \Rightarrow $ System heterogeneity is the diversity in the processing capabilities and network bandwidth of clients including hardware and computation (CPU, memory, etc), network connectivity, Power Constraints and workload (varies in computation load and data transmission speeds).
+    $ \Rightarrow $ System heterogeneity is the diversity in the processing capabilities and network bandwidth of clients including hardware and computation (CPU, memory, etc), network connectivity, Power Constraints and workload (varies in computation load and data transmission speeds).
 
-$ \Rightarrow $ System heterogeneity is a problem because it introduces several challenges in federated learning:
-- The Straggler Effect and Timeouts: Different mobile hardware leads to significantly varying processing speeds. This disparity causes slower devices (stragglers) to delay the aggregation step in synchronous FL protocols, resulting in longer waits upon aggregation of updates.
-- Infeasible Fixed Workload: Conventional FL methods, such as Federated Averaging (FedAvg), often mandate a uniform amount of local work (e.g., running the same number of local epochs, E) for all devices. System heterogeneity makes this unrealistic due to varying resource constraints.
-- Device Exclusion and Training Bias: When devices cannot complete the mandatory work within a specified time window (due to low memory or slow processing), they are commonly dropped out of the procedure. Then only the fastest or most capable clients contribute updates, and the global model becomes biased toward the data distributions of those clients, reducing fairness and representativeness.
-- Limited Global Model Capacity: The widely accepted norm in FL that local models must share the same architecture as the global model is problematic. To ensure that the least capable participants can complete the training, developers must limit the global model’s size. This restriction on model capacity leads to degraded accuracy.
-- Exacerbated Instability: Dropping stragglers (as done in FedAvg) implicitly increases statistical heterogeneity and can adversely impact the convergence behavior of the model.
+    $ \Rightarrow $ System heterogeneity is a problem because it introduces several challenges in federated learning:
+    - The Straggler Effect and Timeouts: Different mobile hardware leads to significantly varying processing speeds. This disparity causes slower devices (stragglers) to delay the aggregation step in synchronous FL protocols, resulting in longer waits upon aggregation of updates.
+    - Infeasible Fixed Workload: Conventional FL methods, such as Federated Averaging (FedAvg), often mandate a uniform amount of local work (e.g., running the same number of local epochs, E) for all devices. System heterogeneity makes this unrealistic due to varying resource constraints.
+    - Device Exclusion and Training Bias: When devices cannot complete the mandatory work within a specified time window (due to low memory or slow processing), they are commonly dropped out of the procedure. Then only the fastest or most capable clients contribute updates, and the global model becomes biased toward the data distributions of those clients, reducing fairness and representativeness.
+    - Limited Global Model Capacity: In FL, local models must share the same architecture as the global model. To ensure that the least capable participants can complete the training, developers must limit the global model’s size. This restriction on model capacity leads to degraded accuracy.
+    - Exacerbated Instability: Dropping stragglers implicitly increases statistical heterogeneity and can adversely impact the convergence behavior of the model.
 2. What is Ordered Dropout? 
 
-$ \Rightarrow $ 
+$ \Rightarrow $ Ordered Dropout (OD) is a mechanism for run-time ordered pruning used to achieve an ordered, nested representation of knowledge within Deep Neural Networks. It alleviates the problem of client system heterogeneity by dynamically adapting the model width (size) to the client’s processing capabilities, memory, and energy budget. In fact, OD employs a structured ordered dropping scheme that drops adjacent components (neurons or filters) of the model. This structured pruning ensures that the resulting knowledge representation is nested. 
+If $p_1$ and $p_2$ are two dropout rates, and $p_1 < p_2$, 
+the smaller subnetwork $F_{p_1}$ is nested within the larger subnetwork $F_{p_2}$ ($F_{p_1} \subset F_{p_2}$)
 
 3. How does the aggregation rule account for device heterogeneity?
 
-$ \Rightarrow $ 
+    $ \Rightarrow $ The aggregation function is defined as: 
+    ![Aggregation rule](/TP3/aggregation-rule.png)
+
+    in which for each subset of parameters $ s_j \setminus s_{j-1}  $ the server performs a weighted average (WA) over the updates from clients in the set $ S_j^t $, which includes only those whose capacity $ p^{\text{max}}_i $ is large enough to train that subset. This way, the global model $ \mathbf{w}^{t+1} $ is reconstructed as the union of all these aggregated subsets, ensuring that every client contributes fairly according to its capacity.
+
 
 **Implementation**: Follow the tutorial available at [Flower documentation](https://flower.ai/docs/baselines/fjord.html) and reproduce the results. Note that the tutorial reproduces the result for three different seeds. If you want to reduce the computational time, modify the `run.sh` script to use only one seed.
 
@@ -109,6 +115,8 @@ $ \Rightarrow $
 1. Which one of the two implementation (with and without knowledge distillation) works better? Why?
 
 $ \Rightarrow $ In general, The performance of FjORD with knowledge distillation (KD) is supposed to be better than the implementation without KD, especially for larger submodels. However, it cannot be seen clearly from the evaluation graph because it is not evaluated with best seed (The seed should be 124 according to result from Flower.ai). 
+
+The reason is because knowledge distillation ensures that the global model benefits from both high-capacity and low-capacity clients, leading to higher accuracy across diverse populations. Without knowledge distillation, weaker clients’ contributions are limited and biased toward stronger devices. With knowledge distillation, weaker clients still provide meaningful updates, reducing bias.
 
 2. How do different values of p impact the model’s accuracy? Motivate your answer.
 
