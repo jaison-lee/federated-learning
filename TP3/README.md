@@ -102,9 +102,9 @@ $ \Rightarrow $
 
 **Analysis**: Plot the results.   
 
-![ResNet18-CIFAR10-500 global rounds](/TP3/flower-fjord/restnet18-cifar10.png)
-![ResNet18-CIFAR10-FjORD](/TP3/flower-fjord/fjord.png)
-![ResNet18-CIFAR10-FjORD w/KD](/TP3/flower-fjord/w-fjord.png)
+![ResNet18-CIFAR10-500 global rounds](/TP3/restnet18-cifar10.png)
+![ResNet18-CIFAR10-FjORD](/TP3/fjord.png)
+![ResNet18-CIFAR10-FjORD w/KD](/TP3/w-fjord.png)
 
 1. Which one of the two implementation (with and without knowledge distillation) works better? Why?
 
