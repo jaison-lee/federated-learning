@@ -2,6 +2,8 @@
 
 ## Third Lab - 05 November 2025
 
+## Student: HOANG Tuan
+
 Welcome to the third lab session of the Federated Learning & Data Privacy course! In our first two  labs, we ran experiments using our framework. Today, we will test a real production-based framework.
 
 
