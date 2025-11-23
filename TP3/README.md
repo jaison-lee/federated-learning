@@ -98,7 +98,7 @@ Review the paper [FjORD: Fair and Accurate Federated Learning under heterogeneou
     => The aggregation function is defined as: 
     ![Aggregation rule](/TP3/aggregation-rule.png)
 
-    in which for each subset of parameters $ s_j \setminus s_{j-1}  $ the server performs a weighted average (WA) over the updates from clients in the set $ S_j^t $, which includes only those whose capacity $ p^{\text{max}}_i $ is large enough to train that subset. This way, the global model $ \mathbf{w}^{t+1} $ is reconstructed as the union of all these aggregated subsets, ensuring that every client contributes fairly according to its capacity.
+    in which for each subset of parameters $s_j \setminus s_{j-1}$ the server performs a weighted average (WA) over the updates from clients in the set $S_j^t$, which includes only those whose capacity $p^{\text{max}}_i$ is large enough to train that subset. This way, the global model $\mathbf{w}^{t+1}$ is reconstructed as the union of all these aggregated subsets, ensuring that every client contributes fairly according to its capacity.
 
 
 **Implementation**: Follow the tutorial available at [Flower documentation](https://flower.ai/docs/baselines/fjord.html) and reproduce the results. Note that the tutorial reproduces the result for three different seeds. If you want to reduce the computational time, modify the `run.sh` script to use only one seed.
