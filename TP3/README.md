@@ -24,7 +24,7 @@ Now you are ready to proceed with Flower installation.
 **Questions**:  
 1. In the basic Flower setup described in the tutorial, what are the two main applications that the user must define? What are their respective roles?
 
-$ \Rightarrow $ The two main applications must be defined are ServerApp and ClientApp:
+=> The two main applications must be defined are ServerApp and ClientApp:
 
 - The ServerApp simulates what is running on the central server, it is responsible for orchestrating federated learning rounds, aggregating client update and deciding when training process stops. Additionaly, all implementation of strategies is also in this part to combine client parameters.
 
@@ -33,7 +33,7 @@ $ \Rightarrow $ The two main applications must be defined are ServerApp and Clie
 
 2. How do clients and server communicate and share parameters in Flower?Describe the object they use and the purpose of each specific field.
 
-$ \Rightarrow $ Clients and server communicate by sending and receiving `Message` $object.
+=> Clients and server communicate by sending and receiving `Message` $object.
 
 The `Message` object carries a `RecordDict` as the main payload. `RecordDict` contains 3 main record types:
 
@@ -43,7 +43,7 @@ The `Message` object carries a `RecordDict` as the main payload. `RecordDict` co
 
 3. How can a user define how a client should perform training? Is there any constraint on the name of the training function?
 
-$ \Rightarrow $ To define how a client perform training, user should implement local training steps in the client app under `train()` function and this function should be wrapped by a decorator `@app.train()`. In addition to the `@app.train()` decorator, there is no special constraint on the function's name. However, naming `train()` is usually considered as best practice for naming convention in this case. 
+=> To define how a client perform training, user should implement local training steps in the client app under `train()` function and this function should be wrapped by a decorator `@app.train()`. In addition to the `@app.train()` decorator, there is no special constraint on the function's name. However, naming `train()` is usually considered as best practice for naming convention in this case. 
 
 4. What is the difference between implementing an  `@app.evaluate` function on a server and on a client?
 
@@ -53,7 +53,7 @@ $ \Rightarrow $ To define how a client perform training, user should implement l
 
 5. What is the purpose of the `Context` object? How can we modify the simulation parameters? 
 
-$ \Rightarrow $ The `Context` object contains metadata and configuration about the current simulation such as hyperparameter, number of communication round, etc. and it is passed into client and server function to allow both of them retrieve current metadata for the simulation. These metadata is store in pyproject.toml where we can modify, for instance in this given code:
+=> The `Context` object contains metadata and configuration about the current simulation such as hyperparameter, number of communication round, etc. and it is passed into client and server function to allow both of them retrieve current metadata for the simulation. These metadata is store in pyproject.toml where we can modify, for instance in this given code:
 
 ```
 [tool.flwr.app.config]
@@ -79,9 +79,9 @@ Review the paper [FjORD: Fair and Accurate Federated Learning under heterogeneou
 **Preliminary Questions**: 
 1. What is system heterogeneity and why it is a problem in Federated Learning?
 
-    $ \Rightarrow $ System heterogeneity is the diversity in the processing capabilities and network bandwidth of clients including hardware and computation (CPU, memory, etc), network connectivity, Power Constraints and workload (varies in computation load and data transmission speeds).
+    => System heterogeneity is the diversity in the processing capabilities and network bandwidth of clients including hardware and computation (CPU, memory, etc), network connectivity, Power Constraints and workload (varies in computation load and data transmission speeds).
 
-    $ \Rightarrow $ System heterogeneity is a problem because it introduces several challenges in federated learning:
+    => System heterogeneity is a problem because it introduces several challenges in federated learning:
     - The Straggler Effect and Timeouts: Different mobile hardware leads to significantly varying processing speeds. This disparity causes slower devices (stragglers) to delay the aggregation step in synchronous FL protocols, resulting in longer waits upon aggregation of updates.
     - Infeasible Fixed Workload: Conventional FL methods, such as Federated Averaging (FedAvg), often mandate a uniform amount of local work (e.g., running the same number of local epochs, E) for all devices. System heterogeneity makes this unrealistic due to varying resource constraints.
     - Device Exclusion and Training Bias: When devices cannot complete the mandatory work within a specified time window (due to low memory or slow processing), they are commonly dropped out of the procedure. Then only the fastest or most capable clients contribute updates, and the global model becomes biased toward the data distributions of those clients, reducing fairness and representativeness.
@@ -89,13 +89,13 @@ Review the paper [FjORD: Fair and Accurate Federated Learning under heterogeneou
     - Exacerbated Instability: Dropping stragglers implicitly increases statistical heterogeneity and can adversely impact the convergence behavior of the model.
 2. What is Ordered Dropout? 
 
-$ \Rightarrow $ Ordered Dropout (OD) is a mechanism for run-time ordered pruning used to achieve an ordered, nested representation of knowledge within Deep Neural Networks. It alleviates the problem of client system heterogeneity by dynamically adapting the model width (size) to the client’s processing capabilities, memory, and energy budget. In fact, OD employs a structured ordered dropping scheme that drops adjacent components (neurons or filters) of the model. This structured pruning ensures that the resulting knowledge representation is nested. 
-If $p_1$ and $p_2$ are two dropout rates, and $p_1 < p_2$, 
-the smaller subnetwork $F_{p_1}$ is nested within the larger subnetwork $F_{p_2}$ ($F_{p_1} \subset F_{p_2}$)
+    => Ordered Dropout (OD) is a mechanism for run-time ordered pruning used to achieve an ordered, nested representation of knowledge within Deep Neural Networks. It alleviates the problem of client system heterogeneity by dynamically adapting the model width (size) to the client’s processing capabilities, memory, and energy budget. In fact, OD employs a structured ordered dropping scheme that drops adjacent components (neurons or filters) of the model. This structured pruning ensures that the resulting knowledge representation is nested. 
+    If $p_1$ and $p_2$ are two dropout rates, and $p_1 < p_2$, 
+    the smaller subnetwork $F_{p_1}$ is nested within the larger subnetwork $F_{p_2}$ ($F_{p_1} \subset F_{p_2}$)
 
 3. How does the aggregation rule account for device heterogeneity?
 
-    $ \Rightarrow $ The aggregation function is defined as: 
+    => The aggregation function is defined as: 
     ![Aggregation rule](/TP3/aggregation-rule.png)
 
     in which for each subset of parameters $ s_j \setminus s_{j-1}  $ the server performs a weighted average (WA) over the updates from clients in the set $ S_j^t $, which includes only those whose capacity $ p^{\text{max}}_i $ is large enough to train that subset. This way, the global model $ \mathbf{w}^{t+1} $ is reconstructed as the union of all these aggregated subsets, ensuring that every client contributes fairly according to its capacity.
@@ -114,13 +114,13 @@ the smaller subnetwork $F_{p_1}$ is nested within the larger subnetwork $F_{p_2}
 
 1. Which one of the two implementation (with and without knowledge distillation) works better? Why?
 
-$ \Rightarrow $ In general, The performance of FjORD with knowledge distillation (KD) is supposed to be better than the implementation without KD, especially for larger submodels. However, it cannot be seen clearly from the evaluation graph because it is not evaluated with best seed (The seed should be 124 according to result from Flower.ai). 
+    => In general, The performance of FjORD with knowledge distillation (KD) is supposed to be better than the implementation without KD, especially for larger submodels. However, it cannot be seen clearly from the evaluation graph because it is not evaluated with best seed (The seed should be 124 according to result from Flower.ai). 
 
-The reason is because knowledge distillation ensures that the global model benefits from both high-capacity and low-capacity clients, leading to higher accuracy across diverse populations. Without knowledge distillation, weaker clients’ contributions are limited and biased toward stronger devices. With knowledge distillation, weaker clients still provide meaningful updates, reducing bias.
+    The reason is because knowledge distillation ensures that the global model benefits from both high-capacity and low-capacity clients, leading to higher accuracy across diverse populations. Without knowledge distillation, weaker clients’ contributions are limited and biased toward stronger devices. With knowledge distillation, weaker clients still provide meaningful updates, reducing bias.
 
 2. How do different values of p impact the model’s accuracy? Motivate your answer.
 
-By Ordered Dropout(OD) mechanism, OD orders knowledge representation in nested submodels. Since the training is performed on these nested structures, the higher capacity submodels (higher p) capture and aggregate more knowledge from the network. Then, a larger p means fewer units are pruned, resulting in higher FLOPs and more parameters contributing to the forward and backward passes, thereby increasing the model's accuracy.
+    By Ordered Dropout(OD) mechanism, OD orders knowledge representation in nested submodels. Since the training is performed on these nested structures, the higher capacity submodels (higher p) capture and aggregate more knowledge from the network. Then, a larger p means fewer units are pruned, resulting in higher FLOPs and more parameters contributing to the forward and backward passes, thereby increasing the model's accuracy.
 
 ### BONUS EXERCISE Federated  Distillation
 
