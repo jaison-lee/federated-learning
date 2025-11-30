@@ -1,0 +1,2 @@
+- +train_mode=fjord_kd
+- ++manual_seed=123

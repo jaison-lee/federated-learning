@@ -2,6 +2,8 @@
 
 ## Second Lab - 09 October 2025
 
+## Student: HOANG Tuan
+
 Welcome to the second lab session of the Federated Learning & Data Privacy course! In our first lab, we implemented the Federated Averaging (FedAvg) algorithm, writing the client and aggregator classes, and we performed some preliminary experiments.
 
 ### RECAP OF EXERCISE 3 - The Effect of Local Epochs
