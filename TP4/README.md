@@ -49,7 +49,7 @@ python train.py \
 ```
 Display a graph G1 where the x-axis represents the number of malicious clients and the y-axis represents the accuracy of the final model. What are your observations?
 
-  => From the graph G1, we can see that when there is no malicious client involving in the training process, the model performs normally. When the number of malicious clients involving in the training process increases, the performance of the model decreases gradually. When number of malicious client is a half of total client in the training process, the performance of the model drops significantly.
+  => From the graph G1, we can see that when there is no malicious client involved in the training process, the model performs normally. When the number of malicious clients involved in the training process increases, the performance of the model decreases gradually. When number of malicious client is a half of total client in the training process, the performance of the model drops significantly.
 
 ![Graph G1](/TP4/ex1.G1.png)
 
@@ -66,7 +66,7 @@ the function will return the `MedianAggregator`.
 - Run the experiments with `prop` equivalent to 0, 0.1, 0.3 and 0.5 and 'args.aggregator_type' is equivalent to `'median'`, when the data is iid. 
 Display the results in the previous graph G1. What are your observations, especially compared with the scenario where no defense is implemented?
 
-With the implementation of MedianAggregator defense, the effect of malicious client with proportion 0.1 and 0.3 is negligible and the model performance is retained. However, it cannot defense when number of malicious client is a half of total client involving in the training process.
+With the implementation of MedianAggregator defense, the effect of malicious client with proportion 0.1 and 0.3 is negligible and the model performance is retained. However, it cannot defense when number of malicious client is a half of total client involved in the training process.
 
 
 ![Graph G1](/TP4/ex2.G1.png)
@@ -79,6 +79,8 @@ With the implementation of MedianAggregator defense, the effect of malicious cli
 - Regenerate the dataset with non-iid option activated
 - Run the experiments with `prop` equivalent to 0, 0.1, 0.3 and 0.5. Display a graph G2 where the x-axis represents the number of malicious clients and the y-axis represents the accuracy of the final model. What are your observations?
 
+We can still see that the performance of the model decreases as number of malicious client increases. However, the effect of malicious client on the performance of the model is even higher comparing to their result when the dataset is iid. Especially, the accuracy drop significantly when prop=0.3 and 0.5.
+
 ![Graph G2](/TP4/ex3.no_median.G2.png)
 
 ![Loss](/TP4/ex3.no_median.loss.png)
@@ -88,6 +90,8 @@ With the implementation of MedianAggregator defense, the effect of malicious cli
 
 - Run the experiments with `prop` equivalent to 0, 0.1, 0.3 and 0.5 and 'args.aggregator_type' is equivalent to `'median'`. 
 Display the results in the previous graph G2. What are your observations, especially compared with the scenario where no defense is implemented?
+
+In case of using MedianAggregator, the model cannot defense from malicious clients when dataset is non-iid, as accuracy decreases when number of malicious client increases. However, when there is no malicious clients involved, the performance also drops significantly comparing to their result without using MedianAggregator.
 
 
 ![Graph G2](/TP4/ex3.median.G2.png)
