@@ -1,5 +1,7 @@
 # Federated Learning & Data Privacy, 2025-2026
 
+## Student: HOANG Tuan
+
 ## Forth Lab - 17 November 2025
 
 Welcome to the forth lab session of the Federated Learning & Data Privacy course! Today's topic is on the **malicious attacks** in FL and the corresponding **defenses**. 
